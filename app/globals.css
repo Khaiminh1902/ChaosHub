@@ -66,3 +66,67 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+:root {
+  /* Light mode colors */
+  --background: 240 240 240; /* Light gray solid background */
+  --foreground: 17 24 39; /* Dark gray text */
+  --card: 255 255 255; /* White cards */
+  --card-foreground: 17 24 39; /* Dark gray text for cards */
+  --primary: 59 130 246; /* Blue for primary elements */
+  --primary-foreground: 255 255 255; /* White text on primary elements */
+  --muted: 229 231 235; /* Muted gray for secondary elements */
+  --muted-foreground: 107 114 128; /* Muted text */
+  --gradient-learntrack: linear-gradient(to right, #00FFFF, #FF00FF);
+}
+
+.dark {
+  /* Dark mode colors */
+  --background: 17 24 39; /* Dark gray solid background */
+  --foreground: 229 231 235; /* Light gray text */
+  --card: 31 41 55; /* Darker gray cards */
+  --card-foreground: 229 231 235; /* Light gray text for cards */
+  --primary: 96 165 250; /* Lighter blue for primary elements */
+  --primary-foreground: 255 255 255; /* White text on primary elements */
+  --muted: 55 65 81; /* Muted dark gray for secondary elements */
+  --muted-foreground: 156 163 175; /* Muted text */
+  --gradient-learntrack: linear-gradient(to right, #00FFFF, #FF00FF);
+}
+
+/* Default solid background for all pages */
+body {
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
+  min-height: 100vh;
+}
+
+/* Override with radial gradient for sign-in and sign-up pages only */
+body:has(.auth-page) {
+  background: radial-gradient(circle at center, white 0%, black 100%);
+}
+
+/* Gradient for LearnTrack text */
+.gradient-learntrack {
+  background: var(--gradient-learntrack);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Style cards */
+.card {
+  background: rgba(var(--card), 0.9);
+  color: rgb(var(--card-foreground));
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Style header */
+header {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

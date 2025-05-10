@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "./components/theme-provider";
-import { ModeToggle } from "./components/ModeToggle";
+import { Header } from "./components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +29,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
         >
           <ThemeProvider
             attribute="class"
@@ -37,16 +37,8 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <header>
-              <SignedOut></SignedOut>
-              <SignedIn>
-                <div className="items-center gap-2 flex justify-end p-2">
-                  <ModeToggle />
-                  <UserButton />
-                </div>
-              </SignedIn>
-            </header>
-            {children}
+            <Header />
+            <main className="flex-1 p-2">{children}</main>
           </ThemeProvider>
         </body>
       </html>
