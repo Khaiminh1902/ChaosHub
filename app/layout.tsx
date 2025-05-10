@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { ThemeProvider } from "./components/theme-provider";
+import { ModeToggle } from "./components/ModeToggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,19 +27,27 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <header>
-            <SignedOut></SignedOut>
-            <SignedIn>
-              <div className="items-end flex justify-end p-2">
-                <UserButton />
-              </div>
-            </SignedIn>
-          </header>
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <header>
+              <SignedOut></SignedOut>
+              <SignedIn>
+                <div className="items-center gap-2 flex justify-end p-2">
+                  <ModeToggle />
+                  <UserButton />
+                </div>
+              </SignedIn>
+            </header>
+            {children}
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
