@@ -79,7 +79,7 @@
   --muted: 229 231 235; /* Muted gray for secondary elements */
   --muted-foreground: 107 114 128; /* Muted text */
   --gradient-learntrack: linear-gradient(to right, #00FFFF, #FF00FF);
-}
+} 
 
 .dark {
   /* Dark mode colors */
