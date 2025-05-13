@@ -5,6 +5,8 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)', // Public sign-up routes
 ]);
 
+
+
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
     await auth.protect(); // Protect all non-public routes, including /api/auth/supabase-token

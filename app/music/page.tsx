@@ -1,200 +1,242 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { MusicIcon } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { useUser } from "@clerk/nextjs";
-import { Input } from "@/components/ui/input";
+import { MusicIcon, Trash2Icon } from "lucide-react";
+import { useState, useEffect } from "react";
+import Dropzone from "react-dropzone";
+import { supabaseClient } from "@/lib/supabaseClient";
+import { useUser, useAuth } from "@clerk/nextjs";
 
-type MusicFile = {
+interface MusicFile {
   id: string;
-  name: string;
-  url: string;
-};
+  file_name: string;
+  file_url: string;
+}
 
-export default function Music() {
+const Music = () => {
   const { user } = useUser();
-  const [files, setFiles] = useState<MusicFile[]>([]);
+  const { getToken } = useAuth();
+  const [files, setFiles] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<MusicFile[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null); // Add ref for the input
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [supabaseUserId, setSupabaseUserId] = useState<string | null>(null);
 
+  // Set Supabase session with Clerk token and get Supabase user ID
   useEffect(() => {
     if (user) {
-      fetchMusicFiles();
+      const setAuthToken = async () => {
+        try {
+          const token = await getToken({ template: "supabase" });
+          console.log("Clerk JWT Token:", token); // Log the token for debugging
+          if (!token) {
+            throw new Error("No Clerk token found");
+          }
+
+          const { error: sessionError } = await supabaseClient.auth.setSession({
+            access_token: token,
+            refresh_token: "",
+          });
+          if (sessionError) {
+            throw new Error(
+              "Failed to set Supabase session: " + sessionError.message
+            );
+          }
+
+          const { data: sessionData, error: userError } =
+            await supabaseClient.auth.getUser();
+          if (userError || !sessionData.user) {
+            throw new Error(
+              "Failed to get Supabase user: " + userError?.message
+            );
+          }
+
+          console.log("Supabase User ID:", sessionData.user.id);
+          setSupabaseUserId(sessionData.user.id);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          console.error("Auth setup error:", error.message);
+          setFetchError(
+            "Failed to authenticate with Supabase: " + error.message
+          );
+        }
+      };
+      setAuthToken();
     }
-  }, [user]);
+  }, [user, getToken]);
 
-  async function fetchMusicFiles() {
-    try {
-      const response = await fetch("/api/music");
-      if (!response.ok) {
-        throw new Error("Failed to fetch music files");
-      }
-      const data = await response.json();
-      setFiles(data);
-    } catch (err: unknown) {
-      const error = err as Error;
-      setError(error.message);
+  // Fetch uploaded files from database
+  useEffect(() => {
+    if (supabaseUserId) {
+      const fetchFiles = async () => {
+        const { data, error } = await supabaseClient
+          .from("music_files")
+          .select("id, file_name, file_url")
+          .eq("user_id", supabaseUserId);
+        if (error) {
+          const errorMessage = error.message || "Unknown error";
+          console.error("Error fetching files:", errorMessage, error);
+          setFetchError(`Failed to fetch files: ${errorMessage}`);
+        } else {
+          setUploadedFiles(data || []);
+          setFetchError(null);
+        }
+      };
+      fetchFiles();
     }
-  }
+  }, [supabaseUserId]);
 
-  async function handleUpload(event: React.ChangeEvent<HTMLInputElement>) {
-    console.log("handleUpload triggered", event.target.files);
-    try {
-      setUploading(true);
-      setError(null);
+  // Handle file drop
+  const onDrop = async (acceptedFiles: File[]) => {
+    setFiles(acceptedFiles);
+    setUploading(true);
 
-      if (!user) {
-        setError("Please sign in to upload files.");
-        return;
-      }
-
-      if (!event.target.files || event.target.files.length === 0) {
-        throw new Error("Please select a file to upload.");
-      }
-
-      const file = event.target.files[0];
+    for (const file of acceptedFiles) {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("userId", user.id);
 
-      const response = await fetch("/api/music", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload file");
+      try {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const result = await response.json();
+        if (response.ok) {
+          setUploadedFiles((prev) => [
+            ...prev,
+            {
+              id: Date.now().toString(),
+              file_name: file.name,
+              file_url: result.url,
+            },
+          ]);
+        } else {
+          console.error("Upload failed:", result.error);
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
       }
-
-      await fetchMusicFiles();
-    } catch (err: unknown) {
-      const error = err as Error;
-      setError(error.message);
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  async function handleRename(
-    fileId: string,
-    oldName: string,
-    newName: string
-  ) {
-    if (!newName) {
-      setError("New name cannot be empty.");
-      return;
     }
 
+    setFiles([]);
+    setUploading(false);
+  };
+
+  // Delete file
+  const removeFile = async (fileId: string, fileName: string) => {
     try {
-      const response = await fetch("/api/music", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ oldName, newName, userId: user?.id }),
-      });
+      const supabase = supabaseClient;
+      const filePath = fileName.split("/").slice(-2).join("/"); // Extract userId/filename
 
-      if (!response.ok) {
-        throw new Error("Failed to rename file");
+      // Delete from Storage
+      const { error: storageError } = await supabase.storage
+        .from("music")
+        .remove([filePath]);
+
+      if (storageError) {
+        throw new Error(storageError.message);
       }
 
-      await fetchMusicFiles();
-    } catch (err: unknown) {
-      const error = err as Error;
-      setError(error.message);
-    }
-  }
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from("music_files")
+        .delete()
+        .eq("id", fileId);
 
-  async function handleDelete(fileName: string) {
-    try {
-      const response = await fetch("/api/music", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fileName }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete file");
+      if (dbError) {
+        throw new Error(dbError.message);
       }
 
-      await fetchMusicFiles();
-    } catch (err: unknown) {
-      const error = err as Error;
-      setError(error.message);
+      setUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Delete error:", error.message);
     }
-  }
+  };
 
   return (
-    <div className="w-[100%] md:w-[40%] border-t-2 border-b-2 border-r-2 border-[#D2D2D2] flex flex-col overflow-visible">
-      <div className="flex justify-center pt-4 text-lg font-semibold gap-2">
-        Upload your music <MusicIcon />
-      </div>
-      <div className="flex justify-center pb-4">
-        <div>
-          <Button
-            className="hover:cursor-pointer bg-gray-800 text-white font-extrabold py-5 px-12 rounded-md border-2 bg-gradient-to-t to-black from-[#8C8C8C] mt-6"
-            disabled={uploading}
-            onClick={() => fileInputRef.current?.click()} // Trigger input click
-          >
-            {uploading ? "Uploading..." : "Upload"}
-          </Button>
-          <Input
-            ref={fileInputRef} // Attach ref to input
-            id="music-upload"
-            type="file"
-            accept="audio/mpeg,audio/wav"
-            onChange={(e) => {
-              console.log("Input onChange triggered", e.target.files);
-              handleUpload(e);
-            }}
-            className="hidden"
-          />
+    <div className="w-full md:w-[40%] mx-auto p-6">
+      {fetchError && (
+        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
+          {fetchError}
         </div>
-      </div>
-      {error && <div className="text-red-500 text-center">{error}</div>}
-      <div className="pt-6 px-4">
-        <h3 className="font-semibold">Your Music</h3>
-        {files.length === 0 ? (
-          <p>No music files uploaded yet.</p>
-        ) : (
-          <ul className="space-y-4">
-            {files.map((file) => (
-              <li key={file.id} className="border p-4 rounded-md">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p>{file.name.split("/").pop()}</p>
-                    <audio controls src={file.url} className="mt-2">
-                      Your browser does not support the audio element.
-                    </audio>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => {
-                        const newName = prompt(
-                          "Enter new file name:",
-                          file.name.split("/").pop()
-                        );
-                        if (newName) {
-                          handleRename(file.id, file.name, newName);
-                        }
-                      }}
-                      variant="outline"
-                    >
-                      Rename
-                    </Button>
-                    <Button
-                      onClick={() => handleDelete(file.name)}
-                      variant="destructive"
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </div>
+      )}
+      <Dropzone
+        onDrop={onDrop}
+        accept={{ "audio/*": [".mp3", ".wav"] }}
+        disabled={uploading}
+      >
+        {({ getRootProps, getInputProps, isDragActive }) => (
+          <div
+            {...getRootProps()}
+            className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
+              ${
+                isDragActive
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-300 bg-white"
+              }
+              ${
+                uploading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:border-gray-400"
+              }`}
+          >
+            <input {...getInputProps()} />
+            <div className="flex flex-col items-center gap-4">
+              <MusicIcon className="w-12 h-12 text-gray-600" />
+              <p className="text-lg font-semibold text-gray-700">
+                {uploading
+                  ? "Uploading..."
+                  : isDragActive
+                  ? "Drop your music files here!"
+                  : "Drag & drop your music files or click to upload"}
+              </p>
+              <Button
+                className="bg-gradient-to-t from-gray-800 to-black text-white font-bold py-2 px-6 rounded-md"
+                disabled={uploading}
+              >
+                Select Files
+              </Button>
+            </div>
+          </div>
+        )}
+      </Dropzone>
+      <div className="mt-6">
+        {uploadedFiles.length > 0 ? (
+          <ul className="space-y-2">
+            {uploadedFiles.map((file) => (
+              <li
+                key={file.id}
+                className="flex items-center justify-between p-3 bg-gray-100 rounded-md"
+              >
+                <a
+                  href={file.file_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-700 truncate max-w-[70%] hover:underline"
+                >
+                  {file.file_name}
+                </a>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeFile(file.id, file.file_url)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <Trash2Icon className="w-5 h-5" />
+                </Button>
               </li>
             ))}
           </ul>
+        ) : (
+          <p className="text-center text-gray-500">
+            No music files uploaded yet.
+          </p>
         )}
       </div>
     </div>
   );
-}
+};
+
+export default Music;
