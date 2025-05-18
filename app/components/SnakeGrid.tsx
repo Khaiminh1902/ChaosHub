@@ -4,16 +4,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 
 const GRID_SIZE = 30;
-const CELL_SIZE = 20; // Size of each cell in pixels
+const CELL_SIZE = 20;
 const INITIAL_SNAKE: Point[] = [
   { y: 0, x: 2 },
   { y: 0, x: 1 },
   { y: 0, x: 0 },
 ];
 const INITIAL_FOOD: Point = { x: 5, y: 5 };
-const INITIAL_SPEED = 50; // Initial milliseconds per move
-const MIN_SPEED = 50; // Fastest (ms)
-const MAX_SPEED = 500; // Slowest (ms)
+const INITIAL_SPEED = 50;
+const MIN_SPEED = 50;
+const MAX_SPEED = 500;
 
 type Point = {
   x: number;
@@ -30,7 +30,6 @@ export default function SnakeGrid() {
   const [score, setScore] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(INITIAL_SPEED);
 
-  // Generate random food position, ensuring it’s not on the snake
   const generateFood = useCallback(() => {
     let newFood: Point;
     do {
@@ -44,14 +43,12 @@ export default function SnakeGrid() {
     setFood(newFood);
   }, [snake]);
 
-  // Move the snake
   const moveSnake = useCallback(() => {
     if (gameOver) return;
 
     setSnake((prevSnake: Point[]): Point[] => {
       const head = { ...prevSnake[0] };
 
-      // Update head based on direction
       switch (direction) {
         case "up":
           head.y -= 1;
@@ -67,7 +64,6 @@ export default function SnakeGrid() {
           break;
       }
 
-      // Check for collisions with walls
       if (
         head.x < 0 ||
         head.x >= GRID_SIZE ||
@@ -75,44 +71,39 @@ export default function SnakeGrid() {
         head.y >= GRID_SIZE
       ) {
         setGameOver(true);
-        return prevSnake; // Explicitly return prevSnake
+        return prevSnake;
       }
 
-      // Check for collisions with self
       if (
         prevSnake.some(
           (part, index) => index !== 0 && part.x === head.x && part.y === head.y
         )
       ) {
         setGameOver(true);
-        return prevSnake; // Explicitly return prevSnake
+        return prevSnake;
       }
 
       const newSnake = [head, ...prevSnake];
       let ateFood = false;
 
-      // Check if food is eaten
       if (head.x === food.x && head.y === food.y) {
         ateFood = true;
         setScore((prev) => prev + 1);
         generateFood();
       }
 
-      // Remove tail if food wasn’t eaten
       if (!ateFood) {
         newSnake.pop();
       }
 
-      return newSnake; // Always return newSnake
+      return newSnake;
     });
   }, [direction, food, gameOver, generateFood]);
 
-  // Handle keyboard input
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (gameOver) return;
 
-      // Prevent page scrolling for arrow keys
       if (
         ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)
       ) {
@@ -137,7 +128,6 @@ export default function SnakeGrid() {
     [direction, gameOver]
   );
 
-  // Set up game loop and keyboard listener
   useEffect(() => {
     const interval = setInterval(moveSnake, speed);
     window.addEventListener("keydown", handleKeyDown);
@@ -148,7 +138,6 @@ export default function SnakeGrid() {
     };
   }, [moveSnake, handleKeyDown, speed]);
 
-  // Reset game
   const resetGame = () => {
     setSnake(INITIAL_SNAKE);
     setFood(INITIAL_FOOD);
@@ -158,7 +147,6 @@ export default function SnakeGrid() {
     setSpeed(INITIAL_SPEED);
   };
 
-  // Adjust speed
   const increaseSpeed = () => {
     setSpeed((prev) => Math.max(MIN_SPEED, prev - 50));
   };
@@ -206,7 +194,7 @@ export default function SnakeGrid() {
       </div>
       <div
         className="grid grid-cols-30 grid-rows-30 border border-black w-[600px] h-[600px] relative focus:outline-none"
-        tabIndex={0} // Make div focusable for key events
+        tabIndex={0}
       >
         {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => {
           const x = i % GRID_SIZE;
