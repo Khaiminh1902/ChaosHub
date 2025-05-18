@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.13.23",
-    "@clerk/nextjs": "^6.19.2",
+    "@clerk/nextjs": "^6.19.4",
     "@radix-ui/react-dropdown-menu": "^2.1.14",
     "@radix-ui/react-slot": "^1.2.2",
     "@supabase/ssr": "^0.6.1",

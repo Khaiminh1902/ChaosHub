@@ -53,11 +53,11 @@ export default function Home() {
     localStorage.setItem("studyTrackIndex", currentTrackIndex.toString());
     if (audioRef.current) {
       localStorage.setItem(
-        "audioCurrentTime",
+        "audioCurrentTime ",
         audioRef.current.currentTime.toString()
       );
       localStorage.setItem(
-        "audioIsPlaying",
+        "audioIsPlaying ",
         (!isStudying && !audioRef.current.paused).toString()
       );
     }
