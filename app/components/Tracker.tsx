@@ -6,11 +6,10 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
   const [rebirths, setRebirths] = useState(0);
   const [isStudying, setIsStudying] = useState(false);
-  const [studyTime, setStudyTime] = useState(0); // Time in seconds
+  const [studyTime, setStudyTime] = useState(0);
   const [showResetPopup, setShowResetPopup] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load saved state from localStorage
   useEffect(() => {
     const savedProgress = localStorage.getItem("studyProgress");
     const savedRebirths = localStorage.getItem("studyRebirths");
@@ -20,38 +19,33 @@ export default function Home() {
     if (savedStudyTime) setStudyTime(parseInt(savedStudyTime));
   }, []);
 
-  // Save state to localStorage
   useEffect(() => {
     localStorage.setItem("studyProgress", progress.toString());
     localStorage.setItem("studyRebirths", rebirths.toString());
     localStorage.setItem("studyTime", studyTime.toString());
   }, [progress, rebirths, studyTime]);
 
-  // Stop studying, memoized with useCallback
   const stopStudying = useCallback(() => {
     if (isStudying) {
       setIsStudying(false);
     }
   }, [isStudying]);
 
-  // Handle study timer and progress updates
   useEffect(() => {
     if (isStudying) {
       timerRef.current = setInterval(() => {
         setStudyTime((prev) => {
-          const newTime = prev + 10; // Increment by 10 seconds per tick
-          // 100% progress = 1 hour = 3,600 seconds
-          // 1% = 36 seconds, 0.1% = 3.6 seconds, 0.01% = 0.36 seconds
+          const newTime = prev + 10;
           const newProgress = (newTime / 3600) * 100;
           if (newProgress >= 100) {
             setProgress(100);
-            stopStudying(); // Stop timer at 100%
+            stopStudying();
             return newTime;
           }
           setProgress(newProgress);
           return newTime;
         });
-      }, 10000); // Update every 10 seconds
+      }, 10000);
     } else if (timerRef.current) {
       clearInterval(timerRef.current);
     }
@@ -60,21 +54,18 @@ export default function Home() {
     };
   }, [isStudying, stopStudying]);
 
-  // Start studying
   const startStudying = () => {
     if (!isStudying) {
       setIsStudying(true);
     }
   };
 
-  // Rebirth
   const rebirth = () => {
     setProgress(0);
     setStudyTime(0);
     setRebirths((prev) => prev + 1);
   };
 
-  // Reset all progress
   const resetProgress = () => {
     setProgress(0);
     setStudyTime(0);
@@ -88,7 +79,7 @@ export default function Home() {
     <div className="py-10 w-full flex items-center justify-center">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
         <h1 className="text-3xl font-extrabold mb-6 text-center text-gray-800">
-          Study Tracker
+          The OP Tracker
         </h1>
         <div className="flex justify-center gap-4 mb-6">
           <button
