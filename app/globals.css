@@ -67,6 +67,53 @@
   }
 }
 
+@layer utilities {
+  .animate-modal {
+    animation: modal 0.3s ease-out forwards;
+  }
+
+  @keyframes modal {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+@layer utilities {
+  .animate-modal {
+    animation: modal 0.3s ease-out forwards;
+  }
+
+  .animate-modal-exit {
+    animation: modal-exit 0.3s ease-in forwards;
+  }
+
+  @keyframes modal {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes modal-exit {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+}
 
 :root {
   /* Light mode colors */
