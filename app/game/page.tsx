@@ -14,7 +14,7 @@ const Game = () => {
         <SnakeGrid />
       </div>
       <div className="flex justify-between">
-        <Link href="/">
+        <Link href="/hub">
           <ArrowLeft className="size-9" />
         </Link>
       </div>
