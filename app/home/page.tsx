@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import MusicUpload from "../music/page";
 import Tracker from "../components/Tracker";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
@@ -13,10 +14,11 @@ const Home = () => {
       <MusicUpload />
       <Tracker />
       <div className="flex justify-end p-2">
-        <Link href="/leaderboard">
+        <Link href="/game">
           <ArrowRight className="size-9" />
         </Link>
       </div>
+      <Footer />
     </div>
   );
 };

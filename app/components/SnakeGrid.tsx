@@ -29,6 +29,7 @@ export default function SnakeGrid() {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(INITIAL_SPEED);
+  const [gameStarted, setGameStarted] = useState<boolean>(false);
 
   const generateFood = useCallback(() => {
     let newFood: Point;
@@ -44,7 +45,7 @@ export default function SnakeGrid() {
   }, [snake]);
 
   const moveSnake = useCallback(() => {
-    if (gameOver) return;
+    if (gameOver || !gameStarted) return;
 
     setSnake((prevSnake: Point[]): Point[] => {
       const head = { ...prevSnake[0] };
@@ -98,11 +99,11 @@ export default function SnakeGrid() {
 
       return newSnake;
     });
-  }, [direction, food, gameOver, generateFood]);
+  }, [direction, food, gameOver, gameStarted, generateFood]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (gameOver) return;
+      if (gameOver || !gameStarted) return;
 
       if (
         ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)
@@ -125,10 +126,12 @@ export default function SnakeGrid() {
           break;
       }
     },
-    [direction, gameOver]
+    [direction, gameOver, gameStarted]
   );
 
   useEffect(() => {
+    if (!gameStarted) return;
+
     const interval = setInterval(moveSnake, speed);
     window.addEventListener("keydown", handleKeyDown);
 
@@ -136,7 +139,7 @@ export default function SnakeGrid() {
       clearInterval(interval);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [moveSnake, handleKeyDown, speed]);
+  }, [moveSnake, handleKeyDown, speed, gameStarted]);
 
   const resetGame = () => {
     setSnake(INITIAL_SNAKE);
@@ -145,6 +148,11 @@ export default function SnakeGrid() {
     setGameOver(false);
     setScore(0);
     setSpeed(INITIAL_SPEED);
+    setGameStarted(false);
+  };
+
+  const startGame = () => {
+    setGameStarted(true);
   };
 
   const increaseSpeed = () => {
@@ -155,7 +163,6 @@ export default function SnakeGrid() {
     setSpeed((prev) => Math.min(MAX_SPEED, prev + 50));
   };
 
-  // Calculate moves per second for display
   const movesPerSecond = (1000 / speed).toFixed(1);
 
   return (
@@ -167,17 +174,25 @@ export default function SnakeGrid() {
       <div className="flex flex-col gap-2 w-[600px]">
         <p className="text-lg">Speed: {movesPerSecond} moves/sec</p>
         <div className="flex gap-2">
+          {!gameStarted && !gameOver && (
+            <button
+              onClick={startGame}
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 cursor-pointer"
+            >
+              Start Game
+            </button>
+          )}
           <button
             onClick={increaseSpeed}
-            disabled={speed <= MIN_SPEED}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+            disabled={speed <= MIN_SPEED || !gameStarted}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400 cursor-pointer"
           >
             Faster
           </button>
           <button
             onClick={decreaseSpeed}
-            disabled={speed >= MAX_SPEED}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+            disabled={speed >= MAX_SPEED || !gameStarted}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400 cursor-pointer"
           >
             Slower
           </button>
@@ -189,11 +204,12 @@ export default function SnakeGrid() {
           step={10}
           value={speed}
           onChange={(e) => setSpeed(Number(e.target.value))}
-          className="w-full"
+          disabled={!gameStarted}
+          className="w-full cursor-pointer"
         />
       </div>
       <div
-        className="grid grid-cols-30 grid-rows-30 border border-black w-[600px] h-[600px] relative focus:outline-none"
+        className="grid grid-cols-30 grid-rows-30 border border-black w-[600px] h-[600px] relative focus:outline-none "
         tabIndex={0}
       >
         {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => {
@@ -216,11 +232,11 @@ export default function SnakeGrid() {
         {gameOver && (
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg text-center">
-              <h2 className="text-2xl font-bold mb-4">Game Over</h2>
-              <p className="text-xl mb-4">Score: {score}</p>
+              <h2 className="text-black text-2xl font-bold mb-4">Game Over</h2>
+              <p className=" text-black text-xl mb-4">Score: {score}</p>
               <button
                 onClick={resetGame}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer"
               >
                 Restart
               </button>

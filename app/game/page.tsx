@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import SnakeGrid from "../components/SnakeGrid";
+import Footer from "../components/Footer";
 
 const Game = () => {
   return (
@@ -13,10 +14,11 @@ const Game = () => {
         <SnakeGrid />
       </div>
       <div className="flex justify-between">
-        <Link href="/leaderboard">
+        <Link href="/">
           <ArrowLeft className="size-9" />
         </Link>
       </div>
+      <Footer />
     </div>
   );
 };
