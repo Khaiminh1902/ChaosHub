@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
@@ -12,6 +13,7 @@ interface Goal {
   duration: number;
   status: "pending" | "running" | "stopped";
   remainingTime: number;
+  startTimestamp?: number; // Optional timestamp when the goal starts running
 }
 
 const Goals: React.FC = () => {
@@ -21,24 +23,63 @@ const Goals: React.FC = () => {
   const [showInvalidModal, setShowInvalidModal] = useState<boolean>(false);
   const [showCompleteModal, setShowCompleteModal] = useState<Goal | null>(null);
 
-  // Load goals from localStorage on component mount
+  // Load goals from localStorage on component mount and resume running timers
   useEffect(() => {
     try {
       const savedGoals = localStorage.getItem("goals");
       if (savedGoals) {
         const parsedGoals = JSON.parse(savedGoals);
+        // Validate that parsedGoals is an array and each item matches the Goal interface
         if (
           Array.isArray(parsedGoals) &&
           parsedGoals.every(
-            (goal) =>
+            (goal: any) =>
               typeof goal.id === "number" &&
               typeof goal.content === "string" &&
               typeof goal.duration === "number" &&
               ["pending", "running", "stopped"].includes(goal.status) &&
-              typeof goal.remainingTime === "number"
+              typeof goal.remainingTime === "number" &&
+              (goal.startTimestamp === undefined ||
+                typeof goal.startTimestamp === "number")
           )
         ) {
-          setGoals(parsedGoals);
+          // Explicitly type updatedGoals as Goal[]
+          const updatedGoals: Goal[] = parsedGoals.map((goal: Goal) => {
+            if (
+              goal.status === "running" &&
+              goal.remainingTime > 0 &&
+              goal.startTimestamp
+            ) {
+              const now = Date.now();
+              const elapsedSeconds = Math.floor(
+                (now - goal.startTimestamp) / 1000
+              );
+              const newRemainingTime = Math.max(
+                0,
+                goal.remainingTime - elapsedSeconds
+              );
+              if (newRemainingTime <= 0) {
+                setShowCompleteModal({
+                  ...goal,
+                  remainingTime: 0,
+                  status: "stopped",
+                });
+                return {
+                  ...goal,
+                  remainingTime: 0,
+                  status: "stopped",
+                  startTimestamp: undefined,
+                };
+              }
+              return {
+                ...goal,
+                remainingTime: newRemainingTime,
+                startTimestamp: now,
+              };
+            }
+            return goal;
+          });
+          setGoals(updatedGoals);
         } else {
           console.warn(
             "Invalid goals data in localStorage, resetting to empty array"
@@ -105,6 +146,8 @@ const Goals: React.FC = () => {
           ? {
               ...goal,
               status: currentStatus === "running" ? "stopped" : "running",
+              startTimestamp:
+                currentStatus === "running" ? undefined : Date.now(),
             }
           : goal
       )
@@ -119,8 +162,17 @@ const Goals: React.FC = () => {
           if (goal.status === "running" && goal.remainingTime > 0) {
             const newRemainingTime = goal.remainingTime - 1;
             if (newRemainingTime <= 0) {
-              setShowCompleteModal(goal);
-              return { ...goal, remainingTime: 0, status: "stopped" };
+              setShowCompleteModal({
+                ...goal,
+                remainingTime: 0,
+                status: "stopped",
+              });
+              return {
+                ...goal,
+                remainingTime: 0,
+                status: "stopped",
+                startTimestamp: undefined,
+              };
             }
             return { ...goal, remainingTime: newRemainingTime };
           }
