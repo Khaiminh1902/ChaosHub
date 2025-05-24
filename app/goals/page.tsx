@@ -6,6 +6,7 @@ import React, { useState, useEffect, FormEvent } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Footer from "../components/Footer";
 
 interface Goal {
   id: number;
@@ -200,7 +201,7 @@ const Goals: React.FC = () => {
   };
 
   return (
-    <div className="p-6 flex flex-col">
+    <div className="h-screen flex flex-col">
       <h1 className="text-3xl font-bold dark:text-white text-black text-center mb-6">
         Set Your Goals
       </h1>
@@ -323,13 +324,16 @@ const Goals: React.FC = () => {
         ))}
       </div>
 
-      <div className="flex justify-between mt-10 relative z-10">
+      <div className="flex justify-between mt-10 relative z-10 items-end">
         <Link href="/">
           <ArrowLeft className="size-9" />
         </Link>
         <Link href="/hub">
           <ArrowRight className="size-9" />
         </Link>
+      </div>
+      <div>
+        <Footer />
       </div>
     </div>
   );
