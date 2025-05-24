@@ -14,7 +14,7 @@ interface Goal {
   duration: number;
   status: "pending" | "running" | "stopped";
   remainingTime: number;
-  startTimestamp?: number; // Optional timestamp when the goal starts running
+  startTimestamp?: number;
 }
 
 const Goals: React.FC = () => {
@@ -24,13 +24,11 @@ const Goals: React.FC = () => {
   const [showInvalidModal, setShowInvalidModal] = useState<boolean>(false);
   const [showCompleteModal, setShowCompleteModal] = useState<Goal | null>(null);
 
-  // Load goals from localStorage on component mount and resume running timers
   useEffect(() => {
     try {
       const savedGoals = localStorage.getItem("goals");
       if (savedGoals) {
         const parsedGoals = JSON.parse(savedGoals);
-        // Validate that parsedGoals is an array and each item matches the Goal interface
         if (
           Array.isArray(parsedGoals) &&
           parsedGoals.every(
@@ -44,7 +42,6 @@ const Goals: React.FC = () => {
                 typeof goal.startTimestamp === "number")
           )
         ) {
-          // Explicitly type updatedGoals as Goal[]
           const updatedGoals: Goal[] = parsedGoals.map((goal: Goal) => {
             if (
               goal.status === "running" &&
@@ -99,7 +96,6 @@ const Goals: React.FC = () => {
     }
   }, []);
 
-  // Save goals to localStorage whenever goals change
   useEffect(() => {
     try {
       localStorage.setItem("goals", JSON.stringify(goals));
@@ -108,7 +104,6 @@ const Goals: React.FC = () => {
     }
   }, [goals]);
 
-  // Save goals before component unmounts (e.g., during navigation)
   useEffect(() => {
     return () => {
       try {
@@ -155,7 +150,6 @@ const Goals: React.FC = () => {
     );
   };
 
-  // Countdown logic and completion detection
   useEffect(() => {
     const interval = setInterval(() => {
       setGoals((prevGoals) =>
@@ -185,7 +179,6 @@ const Goals: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Delete goal after completion modal is closed
   const handleCompleteModalClose = () => {
     if (showCompleteModal) {
       setGoals(goals.filter((goal) => goal.id !== showCompleteModal.id));
@@ -193,7 +186,6 @@ const Goals: React.FC = () => {
     }
   };
 
-  // Format seconds to MM:SS
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -201,11 +193,10 @@ const Goals: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col mt-16">
       <h1 className="text-3xl font-bold dark:text-white text-black text-center mb-6">
         Set Your Goals
       </h1>
-
       <form
         onSubmit={handleSubmit}
         className="w-[350px] mx-auto bg-white p-6 rounded-lg shadow-md mb-10"
@@ -222,7 +213,7 @@ const Goals: React.FC = () => {
             id="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
+            className="mt-1 block w-full rounded-md placeholder:text-gray-400 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
             placeholder="Enter goal content"
           />
         </div>
@@ -238,7 +229,7 @@ const Goals: React.FC = () => {
             id="duration"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500 p-2"
             placeholder="Enter amount of minutes"
           />
         </div>
@@ -323,6 +314,8 @@ const Goals: React.FC = () => {
           </div>
         ))}
       </div>
+
+      <div className=""></div>
 
       <div className="flex justify-between mt-10 relative z-10 items-end">
         <Link href="/">

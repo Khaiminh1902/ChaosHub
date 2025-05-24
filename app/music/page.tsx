@@ -51,7 +51,6 @@ const MusicUpload: React.FC = () => {
     message: "",
   });
 
-  // Fetch tracks for the current user
   useEffect(() => {
     if (isSignedIn && user) {
       db.tracks
@@ -61,7 +60,6 @@ const MusicUpload: React.FC = () => {
         .then((fetchedTracks) => setTracks(fetchedTracks));
     }
 
-    // Cleanup audio on unmount
     return () => {
       if (currentAudio) {
         currentAudio.audio.pause();
@@ -71,32 +69,28 @@ const MusicUpload: React.FC = () => {
     };
   }, [isSignedIn, user]);
 
-  // Update volume when it changes
   useEffect(() => {
     if (currentAudio) {
       currentAudio.audio.volume = volume;
     }
   }, [volume, currentAudio]);
-
-  // Handle file selection with size validation
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      const maxSize = 10 * 1024 * 1024; // 10 MB in bytes
+      const maxSize = 10 * 1024 * 1024;
       if (selectedFile.size > maxSize) {
         setModal({
           show: true,
           message: "File cannot exceed 10 MB.",
         });
         setFile(null);
-        e.target.value = ""; // Clear the file input
+        e.target.value = "";
       } else {
         setFile(selectedFile);
       }
     }
   };
 
-  // Upload MP3 to Cloudinary
   const handleUpload = async () => {
     if (!file || !isSignedIn || !user) return;
 
@@ -117,7 +111,6 @@ const MusicUpload: React.FC = () => {
       console.log("Upload success:", response.data);
       const { secure_url, original_filename } = response.data;
 
-      // Save metadata to Dexie
       const track: Track = {
         userId: user.id,
         fileName: original_filename,
@@ -132,18 +125,14 @@ const MusicUpload: React.FC = () => {
     }
   };
 
-  // Play or resume a track
   const handlePlay = (url: string, trackId: number) => {
     if (currentAudio && currentAudio.trackId === trackId && !isPlaying) {
-      // Resume the current track
       currentAudio.audio.play();
       setIsPlaying(true);
     } else {
-      // Stop any currently playing audio
       if (currentAudio) {
         currentAudio.audio.pause();
       }
-      // Play new track
       const audio = new Audio(url);
       audio.volume = volume;
       audio.play();
@@ -152,7 +141,6 @@ const MusicUpload: React.FC = () => {
     }
   };
 
-  // Pause the current track
   const handlePause = () => {
     if (currentAudio && isPlaying) {
       currentAudio.audio.pause();
@@ -160,13 +148,11 @@ const MusicUpload: React.FC = () => {
     }
   };
 
-  // Adjust volume
   const handleVolumeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
   };
 
-  // Rename a track
   const handleRename = async (id: number) => {
     if (newName && renameId === id) {
       await db.tracks.update(id, { fileName: newName });
@@ -180,7 +166,6 @@ const MusicUpload: React.FC = () => {
     }
   };
 
-  // Delete a track
   const handleDelete = async (id: number, cloudinaryUrl: string) => {
     if (currentAudio && currentAudio.trackId === id) {
       currentAudio.audio.pause();
@@ -189,10 +174,8 @@ const MusicUpload: React.FC = () => {
     }
     await db.tracks.delete(id);
     setTracks(tracks.filter((track) => track.id !== id));
-    // Note: Cloudinary deletion requires server-side API call
   };
 
-  // Close modal
   const closeModal = () => {
     setModal({ show: false, message: "" });
   };
