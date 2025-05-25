@@ -19,8 +19,8 @@ const Room = ({ roomId }: { roomId: string }) => {
       const { ZegoUIKitPrebuilt } = await import(
         "@zegocloud/zego-uikit-prebuilt"
       );
-      const appID = parseInt(process.env.NEXT_PUBLIC_ZEGO_APP_ID!);
-      const serverSecret = process.env.NEXT_PUBLIC_ZEGO_SERVER_SECRET!;
+      const appID = 621664069;
+      const serverSecret = "71c223f135fe142eac8775f035b93364";
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID,
         serverSecret,
