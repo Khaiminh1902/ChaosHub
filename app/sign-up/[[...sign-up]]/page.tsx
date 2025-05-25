@@ -3,7 +3,7 @@ import { SignUp } from "@clerk/nextjs";
 export default function SignUpPage() {
   return (
     <div className="auth-page flex items-center justify-center min-h-screen p-4 overflow-hidden">
-      <div className="flex items-center justify-center w-full max-w-md">
+      <div className="flex it0ems-center justify-center w-full max-w-md">
         <SignUp
           appearance={{
             elements: {

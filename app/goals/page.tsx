@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
@@ -17,15 +19,37 @@ interface Goal {
   startTimestamp?: number;
 }
 
+interface StreakDay {
+  date: string; // ISO date string (YYYY-MM-DD)
+  completed: boolean;
+}
+
 const Goals: React.FC = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [content, setContent] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [showInvalidModal, setShowInvalidModal] = useState<boolean>(false);
   const [showCompleteModal, setShowCompleteModal] = useState<Goal | null>(null);
+  const [streakDays, setStreakDays] = useState<StreakDay[]>([]);
 
+  // Helper function to generate 90-day streak array
+  const initializeStreakDays = (startDate: Date): StreakDay[] => {
+    const days: StreakDay[] = [];
+    for (let i = 0; i < 90; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      days.push({
+        date: date.toISOString().split("T")[0],
+        completed: false,
+      });
+    }
+    return days;
+  };
+
+  // Load goals and streak data from localStorage
   useEffect(() => {
     try {
+      // Load goals
       const savedGoals = localStorage.getItem("goals");
       if (savedGoals) {
         const parsedGoals = JSON.parse(savedGoals);
@@ -89,30 +113,89 @@ const Goals: React.FC = () => {
         localStorage.setItem("goals", JSON.stringify([]));
         setGoals([]);
       }
+
+      // Load streak data
+      const savedStreak = localStorage.getItem("streak");
+      let newStreak: StreakDay[] = initializeStreakDays(new Date());
+      if (savedStreak) {
+        try {
+          const parsedStreak = JSON.parse(savedStreak);
+          if (
+            Array.isArray(parsedStreak) &&
+            parsedStreak.length > 0 &&
+            parsedStreak.every(
+              (day: any) =>
+                typeof day.date === "string" &&
+                typeof day.completed === "boolean"
+            )
+          ) {
+            const firstDate = new Date(parsedStreak[0].date);
+            if (isNaN(firstDate.getTime())) {
+              console.warn("Invalid first date in streak, resetting");
+              localStorage.setItem("streak", JSON.stringify(newStreak));
+              setStreakDays(newStreak);
+            } else {
+              const now = new Date();
+              const daysDiff = Math.floor(
+                (now.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24)
+              );
+              if (daysDiff >= 90) {
+                // Reset streak after 90 days
+                localStorage.setItem("streak", JSON.stringify(newStreak));
+                setStreakDays(newStreak);
+              } else {
+                setStreakDays(parsedStreak);
+              }
+            }
+          } else {
+            console.warn(
+              "Invalid streak data in localStorage, resetting to new streak"
+            );
+            localStorage.setItem("streak", JSON.stringify(newStreak));
+            setStreakDays(newStreak);
+          }
+        } catch (parseError) {
+          console.warn("Error parsing streak data, resetting to new streak");
+          localStorage.setItem("streak", JSON.stringify(newStreak));
+          setStreakDays(newStreak);
+        }
+      } else {
+        localStorage.setItem("streak", JSON.stringify(newStreak));
+        setStreakDays(newStreak);
+      }
     } catch (error) {
-      console.error("Error loading goals from localStorage:", error);
+      console.error("Error loading data from localStorage:", error);
       localStorage.setItem("goals", JSON.stringify([]));
+      localStorage.setItem(
+        "streak",
+        JSON.stringify(initializeStreakDays(new Date()))
+      );
       setGoals([]);
+      setStreakDays(initializeStreakDays(new Date()));
     }
   }, []);
 
+  // Save goals and streak data to localStorage
   useEffect(() => {
     try {
       localStorage.setItem("goals", JSON.stringify(goals));
+      localStorage.setItem("streak", JSON.stringify(streakDays));
     } catch (error) {
-      console.error("Error saving goals to localStorage:", error);
+      console.error("Error saving data to localStorage:", error);
     }
-  }, [goals]);
+  }, [goals, streakDays]);
 
+  // Clean up on unmount
   useEffect(() => {
     return () => {
       try {
         localStorage.setItem("goals", JSON.stringify(goals));
+        localStorage.setItem("streak", JSON.stringify(streakDays));
       } catch (error) {
-        console.error("Error saving goals on unmount:", error);
+        console.error("Error saving data on unmount:", error);
       }
     };
-  }, [goals]);
+  }, [goals, streakDays]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -162,6 +245,13 @@ const Goals: React.FC = () => {
                 remainingTime: 0,
                 status: "stopped",
               });
+              // Update streak for today when goal completes
+              const today = new Date().toISOString().split("T")[0];
+              setStreakDays((prevStreak) =>
+                prevStreak.map((day) =>
+                  day.date === today ? { ...day, completed: true } : day
+                )
+              );
               return {
                 ...goal,
                 remainingTime: 0,
@@ -192,8 +282,50 @@ const Goals: React.FC = () => {
     return `${minutes}m ${secs.toString().padStart(2, "0")}s`;
   };
 
+  // Render streak table (GitHub style)
+  const renderStreakTable = () => {
+    if (!streakDays || streakDays.length === 0) {
+      return <div className="text-center text-gray-600">Loading streak...</div>;
+    }
+
+    const today = new Date().toISOString().split("T")[0];
+    const weeks: StreakDay[][] = [];
+    for (let i = 0; i < streakDays.length; i += 7) {
+      weeks.push(streakDays.slice(i, i + 7));
+    }
+
+    return (
+      <div className="w-full max-w-4xl mx-auto mt-8">
+        <h2 className="text-2xl font-bold text-black dark:text-white text-center mb-4">
+          90-Day Streak
+        </h2>
+        <div className="flex flex-col items-center">
+          <div className="flex gap-0">
+            {weeks.map((week, weekIndex) => (
+              <div key={weekIndex} className="flex flex-col gap-0">
+                {week.map((day, dayIndex) => (
+                  <div
+                    key={`${weekIndex}-${dayIndex}`}
+                    className={`w-6 h-6 border border-gray-300 ${
+                      day.date === today
+                        ? "bg-blue-300 border-blue-500"
+                        : day.completed
+                        ? "bg-green-500 border-green-600"
+                        : "bg-gray-100 border-gray-300"
+                    }`}
+                    title={day.date}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="h-screen flex flex-col mt-16">
+    <div className="flex flex-col mt-16">
       <h1 className="text-3xl font-bold dark:text-white text-black text-center mb-6">
         Set Your Goals
       </h1>
@@ -315,7 +447,7 @@ const Goals: React.FC = () => {
         ))}
       </div>
 
-      <div className=""></div>
+      {renderStreakTable()}
 
       <div className="flex justify-between mt-10 relative z-10 items-end">
         <Link href="/">
