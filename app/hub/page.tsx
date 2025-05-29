@@ -72,7 +72,7 @@ export default function Home() {
       </section>
       <div className="mt-40">
         <div className="flex justify-between mt-10 relative z-10 items-end">
-          <Link href="/goals">
+          <Link href="/ai">
             <ArrowLeft className="size-9" />
           </Link>
           <Link href="/game">

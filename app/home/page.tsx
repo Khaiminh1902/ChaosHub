@@ -2,19 +2,19 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import MusicUpload from "../music/page";
-import Tracker from "../components/Tracker";
 import Footer from "../components/Footer";
+import Goals from "../components/SetGoals";
 
 const Home = () => {
   return (
     <div>
       <span className="text-3xl flex justify-center font-bold">
-        Learn Track
+        Upload Your Music
       </span>
       <MusicUpload />
-      <Tracker />
+      <Goals />
       <div className="flex justify-end p-2">
-        <Link href="/goals">
+        <Link href="/ai">
           <ArrowRight className="size-9" />
         </Link>
       </div>
