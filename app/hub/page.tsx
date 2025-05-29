@@ -22,10 +22,10 @@ export default function Home() {
       <section className=" text-white">
         <div className="mx-auto max-w-screen-xl px-4 py-32 flex-col gap-24 flex items-center">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text  font-extrabold text-transparent text-5xl">
+            <h1 className="text-black bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text  font-extrabold dark:text-transparent text-5xl">
               {`Create or Join a Hub`}
             </h1>
-            <h1 className="bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text font-extrabold text-transparent text-5xl">
+            <h1 className="text-black dark:bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text font-extrabold dark:text-transparent text-5xl">
               <span className="block">to Meet with your Team</span>
             </h1>
             <div className="flex items-center justify-center gap-4 mt-40">
@@ -33,7 +33,7 @@ export default function Home() {
                 type="text"
                 id="name"
                 onChange={(e) => setFullName(e.target.value.toString())}
-                className="border rounded-md focus:border-transparent focus:outline-none focus:ring-0 px-4 py-2 w-full text-black dark:text-white"
+                className="border border-black dark:border-white rounded-md focus:border-transparent focus:outline-none focus:ring-0 px-4 py-2 w-full text-black dark:text-white"
                 placeholder="Enter your name"
               />
             </div>
@@ -46,7 +46,7 @@ export default function Home() {
                     id="roomid"
                     value={roomID}
                     onChange={(e) => setRoomID(e.target.value)}
-                    className="border rounded-md focus:border-transparent focus:outline-none focus:ring-0 px-4 py-2 w-full text-black dark:text-white"
+                    className="border border-black dark:border-white rounded-md focus:border-transparent focus:outline-none focus:ring-0 px-4 py-2 w-full text-black dark:text-white"
                     placeholder="Enter room ID to join a meeting"
                   />
                   <button
@@ -59,7 +59,7 @@ export default function Home() {
                 </div>
                 <div className="mt-4 flex items-center justify-center">
                   <button
-                    className="text-sm cursor-pointer font-medium hover:text-blue-400 hover:underline"
+                    className="text-blue-500 text-sm cursor-pointer font-medium hover:text-blue-400 hover:underline"
                     onClick={() => router.push(`/room/${uuid()}`)}
                   >
                     Or create a new meeting

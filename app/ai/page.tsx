@@ -1,34 +1,27 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
+
+import { Textarea } from "@/components/ui/textarea";
 import React from "react";
-import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import Footer from "../components/Footer";
-import { Button } from "@/components/ui/button";
+import { useChat } from "@ai-sdk/react";
 
 const page = () => {
+  const { messages, handleSubmit, input, handleInputChange } = useChat();
   return (
-    <div>
-      <div className="flex flex-col">
-        <span className="font-bold text-2xl flex items-center justify-center mt-20 bg-gradient-to-l from-blue-500 to-purple-500 text-transparent bg-clip-text">
-          CREATE A NEW ACCOUNT TO CHAT WITH AN AI
-        </span>
-        <Link href="/ai/chat">
-          <Button>Log In with Existing Account</Button>
-        </Link>
-
-        <Button>Create a New Account</Button>
+    <main className="flex items-end h-screen justify-center w-full">
+      <div className="container w-full flex flex-col py-8 ">
+        <div className="flex-1 overflow-y-auto"></div>
+        <form onSubmit={handleSubmit} className="mt-auto relative">
+          <Textarea
+            className="w-full text-lg"
+            placeholder="Say something"
+            value={input}
+            onChange={handleInputChange}
+          />
+        </form>
       </div>
-      <div className="mt-40">
-        <div className="flex justify-between mt-10 relative z-10 items-end">
-          <Link href="/">
-            <ArrowLeft className="size-9" />
-          </Link>
-          <Link href="/hub">
-            <ArrowRight className="size-9" />
-          </Link>
-        </div>
-        <Footer />
-      </div>
-    </div>
+    </main>
   );
 };
 
