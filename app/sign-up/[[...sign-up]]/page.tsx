@@ -13,7 +13,7 @@ export default function SignUpPage() {
               headerTitle: "text-2xl font-bold text-center",
               headerSubtitle: "text-gray-600 dark:text-gray-400 text-center",
               formFieldInput:
-                "border-[rgb(59,130,246)] focus:ring-[rgb(59,130,246)] dark:border-[rgb(96,165,250)] dark:focus:ring-[rgb(96,165,250)]",
+                "border-[rgb(59,130,246)] focus:ring-[rgb(59,130,246)] dark:border-[rgb(96,165,250)] dark:focus:ring-[rgb(96,165,250)] ",
             },
             layout: {
               socialButtonsPlacement: "bottom",
