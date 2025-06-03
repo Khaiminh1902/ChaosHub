@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error(error);
         return NextResponse.json(
-            {error: "Error with the model response"}, 
+            {error: "Error with the model response "}, 
             {status: 500}
         );
     }
