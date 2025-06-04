@@ -8,10 +8,10 @@ import { Input } from '@/components/ui/input';
 const page = () => {
   return (
     <div>
-      <span className='flex text-3xl items-center justify-center font-bold'>AI CHATBOT</span>
+      <span className='flex text-3xl items-center justify-center font-bold'>AI CHATBOT  </span>
       <div className='p-5'>
         <Input 
-          placeholder='Ask something... '
+          placeholder='Ask something...  '
         />
       </div>
     <div className="mt-40">
