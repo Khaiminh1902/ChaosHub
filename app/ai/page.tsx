@@ -11,7 +11,8 @@ const page = () => {
       <span className='flex text-3xl items-center justify-center font-bold'>AI CHATBOT  </span>
       <div className='p-5'>
         <Input 
-          placeholder='Ask something...  '
+          placeholder='Ask something...'
+          className=''
         />
       </div>
     <div className="mt-40">
