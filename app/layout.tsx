@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LearnTrack ",
+  title: "ChaosHub ",
   description: "Created as a small project to help myself study better.",
 };
 

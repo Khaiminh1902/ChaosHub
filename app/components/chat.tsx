@@ -125,7 +125,7 @@ const Chat = () => {
                             className="bg-red-500 cursor-pointer text-white"
                             onClick={() => setShowClearModal(true)}
                         >
-                            Clear Chat
+                            Clear Chat 
                         </Button>
                     </form>
                 </CardContent>

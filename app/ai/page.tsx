@@ -9,7 +9,7 @@ const page = () => {
   return (
     <div>
       <h1 className="flex items-center justify-center text-3xl font-bold mt-20">
-        Chat with AI
+        Chat with AI 
       </h1>
       <Chat />
     <div className="mt-40">

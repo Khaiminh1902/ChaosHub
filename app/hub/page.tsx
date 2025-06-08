@@ -34,20 +34,20 @@ export default function Home() {
                 id="name"
                 onChange={(e) => setFullName(e.target.value.toString())}
                 className="border border-black dark:border-white rounded-md focus:border-transparent focus:outline-none focus:ring-0 px-4 py-2 w-full text-black dark:text-white"
-                placeholder="Enter your name"
+                placeholder="Enter your name "
               />
             </div>
 
             {fullName && fullName.length >= 3 && (
               <div>
-                <div className="flex items-center justify-center gap-4 mt-6">
+                <div className=" flex items-center justify-center gap-4 mt-6 ">
                   <input
                     type="text"
                     id="roomid"
                     value={roomID}
                     onChange={(e) => setRoomID(e.target.value)}
                     className="border border-black dark:border-white rounded-md focus:border-transparent focus:outline-none focus:ring-0 px-4 py-2 w-full text-black dark:text-white"
-                    placeholder="Enter room ID to join a meeting"
+                    placeholder="Enter room ID to join a meeting "
                   />
                   <button
                     className="rounded-md bg-blue-600 hover:bg-blue-500 cursor-pointer px-10 py-[11px] text-sm font-medium text-white focus:outline-none sm:w-auto"

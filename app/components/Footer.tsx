@@ -34,7 +34,7 @@ const Footer = () => {
   return (
     <div className="dark:bg-white dark:text-black text-white bg-black flex-col md:flex-row flex justify-between p-3">
       <div className="flex justify-center items-center">
-        <span className="text-2xl p-3 font-bold">Learn Track</span>
+        <span className="text-2xl p-3 font-bold">ChaosHub</span>
       </div>
       <div className="gap-1 font-semibold text-sm flex justify-center items-center p-2">
         <Copyright height={20} />
