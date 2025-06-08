@@ -10,12 +10,12 @@ const Game = () => {
       <h1 className="flex items-center justify-center text-3xl font-bold ">
         Snake Game
       </h1>
-      <div className="flex items-center justify-center mt-10 mb-10">
+      <div className="flex items-center justify-center mt-10 mb-10 ">
         <SnakeGrid />
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between ">
         <Link href="/hub">
-          <ArrowLeft className="size-9" />
+          <ArrowLeft className="size-9 " />
         </Link>
       </div>
       <Footer />
