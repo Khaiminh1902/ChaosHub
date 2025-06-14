@@ -7,7 +7,7 @@ import TechniquesCard from './techniquesCard';
 const Techniques = () => {
   return (
     <div>
-      <span className='text-3xl font-bold flex justify-center text-center items-center mt-10 mb-24'>Learning Techniques</span>
+      <span className='text-3xl font-bold flex justify-center text-center items-center mt-24 mb-14'>Pomodoro Techniques</span>
       <TechniquesCard />
       <div className="mt-40">
         <div className="flex justify-between mt-10 z-10 items-end">

@@ -14,7 +14,7 @@ const Home = () => {
       <MusicUpload />
       <Goals />
       <div className="flex justify-end p-2">
-        <Link href="/learning">
+        <Link href="/pomodoro">
           <ArrowRight className="size-9" />
         </Link>
       </div>

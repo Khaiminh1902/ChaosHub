@@ -14,7 +14,7 @@ const page = () => {
       <Chat />
     <div className="mt-40">
         <div className="flex justify-between mt-10 z-10 items-end ">
-          <Link href="/learning">
+          <Link href="/pomodoro">
             <ArrowLeft className="size-9" />
           </Link>
           <Link href="/hub">

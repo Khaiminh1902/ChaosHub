@@ -1,12 +1,16 @@
 import React from 'react';
 import CardTop from "../img/card-top.jpg";
+import Images from "../img/images.jpeg"
+import Sunset from "../img/sunset.jpg"
+import Lake from "../img/Nq1z7B.jpg"
 import Image from 'next/image';
 import Link from 'next/link';
 
 const TechniquesCard = () => {
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-10 px-4'>
-      <Link href="/learning/pomodoro/20-5" className="max-w-sm rounded-md overflow-hidden shadow-lg ">
+    <div className='flex items-center justify-center'>
+    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-10 gap-12 px-4 text-center'>
+      <Link href="/pomodoro/techniques/20-5" className="max-w-sm rounded-md overflow-hidden shadow-lg ">
         <Image className="w-full" src={CardTop} alt="Sunset in the mountains" />
         <div className="px-6 py-4">
           <div className="font-bold text-xl mb-2">The 20-5 Technique (Pomodoro)</div>
@@ -15,8 +19,8 @@ const TechniquesCard = () => {
           </p>
         </div>
       </Link>
-      <Link href="/learning/pomodoro/50-10" className="max-w-sm rounded-md overflow-hidden shadow-lg">
-        <Image className="w-full" src={CardTop} alt="Sunset in the mountains" />
+      <Link href="/pomodoro/techniques/50-10" className="max-w-sm rounded-md overflow-hidden shadow-lg">
+        <Image className="w-full" src={Images} alt="Sunset in the mountains" />
         <div className="px-6 py-4">
           <div className="font-bold text-xl mb-2">The 50-10 Technique (Pomodoro)</div>
           <p className="text-gray-700 text-base ">
@@ -24,8 +28,8 @@ const TechniquesCard = () => {
           </p>
         </div>
       </Link>
-      <Link href="/learning/pomodoro/90-20" className="max-w-sm rounded-md overflow-hidden shadow-lg">
-        <Image className="w-full" src={CardTop} alt="Sunset in the mountains" />
+      <Link href="/pomodoro/techniques/90-20" className="max-w-sm rounded-md overflow-hidden shadow-lg">
+        <Image className="w-full" src={Sunset} alt="Sunset in the mountains" />
         <div className="px-6 py-4">
           <div className="font-bold text-xl mb-2">The 90-20 Technique (Pomodoro)</div>
           <p className="text-gray-700 text-base ">
@@ -33,8 +37,8 @@ const TechniquesCard = () => {
           </p>
         </div>
       </Link>
-      <Link href="/learning/pomodoro/custom" className="max-w-sm rounded-md overflow-hidden shadow-lg ">
-        <Image className="w-full" src={CardTop} alt="Sunset in the mountains" />
+      <Link href="/pomodoro/techniques/custom" className="max-w-sm rounded-md overflow-hidden shadow-lg ">
+        <Image className="w-full" src={Lake} alt="Sunset in the mountains" />
         <div className="px-6 py-4">
           <div className="font-bold text-xl mb-2">Custom (Pomodoro)</div>
           <p className="text-gray-700 text-base">
@@ -42,15 +46,7 @@ const TechniquesCard = () => {
           </p>
         </div>
       </Link>
-      <Link href="/learning/eisenhower" className="max-w-sm rounded-md overflow-hidden shadow-lg">
-        <Image className="w-full" src={CardTop} alt="Sunset in the mountains" />
-        <div className="px-6 py-4">
-          <div className="font-bold text-xl mb-2">Eisenhower Matrix</div>
-          <p className="text-gray-700 text-base">
-            Sort tasks: urgent, important, or trash. Stops wasting time on pointless stuff while fires burn.
-          </p>
-        </div>
-      </Link>
+    </div>
     </div>
   );
 };

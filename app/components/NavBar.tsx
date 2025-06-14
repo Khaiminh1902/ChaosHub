@@ -17,8 +17,8 @@ const NavBar = () => {
       <div className={`font-bold ${isActive('/') ? 'text-purple-400' : 'hover:text-purple-400'}`}>
         <Link href="/">Home</Link>
       </div>
-      <div className={`font-bold ${isActive('/learning') ? 'text-purple-400' : 'hover:text-purple-400'}`}>
-        <Link href="/learning">Learning</Link>
+      <div className={`font-bold ${isActive('/pomodoro') ? 'text-purple-400' : 'hover:text-purple-400'}`}>
+        <Link href="/pomodoro">Pomodoro</Link>
       </div>
       <div className={`font-bold ${isActive('/ai') ? 'text-purple-400' : 'hover:text-purple-400'}`}>
         <Link href="/ai">AI Chat</Link>
