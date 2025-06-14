@@ -8,13 +8,13 @@ import Chat from '../components/chat';
 const page = () => {
   return (
     <div>
-      <h1 className="flex items-center justify-center text-3xl font-bold mt-20">
+      <h1 className="flex items-center justify-center text-3xl font-bold mt-20 ">
         Chat with AI 
       </h1>
       <Chat />
     <div className="mt-40">
-        <div className="flex justify-between mt-10 z-10 items-end">
-          <Link href="/">
+        <div className="flex justify-between mt-10 z-10 items-end ">
+          <Link href="/learning">
             <ArrowLeft className="size-9" />
           </Link>
           <Link href="/hub">

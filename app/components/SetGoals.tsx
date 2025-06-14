@@ -212,7 +212,7 @@ const Goals: React.FC = () => {
             id="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="mt-1 block w-full rounded-md placeholder:text-gray-400 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
+            className="text-gray-700 mt-1 block w-full rounded-md placeholder:text-gray-400 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
             placeholder="Enter content"
           />
         </div>
@@ -228,13 +228,13 @@ const Goals: React.FC = () => {
             id="duration"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500 p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm placeholder:text-gray-400 focus:border-indigo-500 focus:ring-indigo-500 p-2 text-gray-700"
             placeholder="Enter amount of minutes"
           />
         </div>
         <Button
           type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer "
         >
           Set Goal
         </Button>
@@ -251,7 +251,7 @@ const Goals: React.FC = () => {
             </p>
             <Button
               onClick={() => setShowInvalidModal(false)}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer "
             >
               Close
             </Button>

@@ -50,7 +50,7 @@ const Room = ({ roomId }: { roomId: string }) => {
         },
       });
 
-      isJoinedRef.current = true; // Mark as joined
+      isJoinedRef.current = true;
     };
 
     if (meetingRef.current && !isJoinedRef.current) {

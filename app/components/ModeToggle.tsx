@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function ModeToggle() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars 
   const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 

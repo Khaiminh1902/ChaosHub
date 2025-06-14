@@ -8,7 +8,7 @@ const Game = () => {
   return (
     <div>
       <h1 className="flex items-center justify-center text-3xl font-bold ">
-        Snake Game
+        Snake Game 
       </h1>
       <div className="flex items-center justify-center mt-10 mb-10 ">
         <SnakeGrid />

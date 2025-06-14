@@ -76,7 +76,7 @@ const Chat = () => {
 
     return (
         <div className="relative">
-            <Card className="mx-4 md:mx-10 mt-10 h-[700px] shadow-lg">
+            <Card className="mx-4 md:mx-10 mt-10 h-[700px] shadow-lg ">
                 <CardContent className="p-6 flex flex-col gap-4 h-full">
                     <div className="flex flex-col h-[700px] gap-2 overflow-y-auto bg-muted rounded p-3">
                         {history.length === 0 && (
@@ -136,7 +136,7 @@ const Chat = () => {
                         <CardContent className="p-4">
                             <p className="mb-4 text-center">
                                 Are you sure you want to clear the chat history? Please understand that this action cannot be undone.
-                            </p>-
+                            </p>
                             <div className="flex justify-end gap-2">
                                 <Button
                                     variant="outline"

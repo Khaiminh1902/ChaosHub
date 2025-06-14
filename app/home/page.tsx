@@ -8,13 +8,13 @@ import Goals from "../components/SetGoals";
 const Home = () => {
   return (
     <div>
-      <span className="text-3xl flex justify-center font-bold">
+      <span className="text-3xl flex justify-center font-bold ">
         Upload Your Music
       </span>
       <MusicUpload />
       <Goals />
       <div className="flex justify-end p-2">
-        <Link href="/ai">
+        <Link href="/learning">
           <ArrowRight className="size-9" />
         </Link>
       </div>

@@ -74,6 +74,7 @@ const MusicUpload: React.FC = () => {
       currentAudio.audio.volume = volume;
     }
   }, [volume, currentAudio]);
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
@@ -197,7 +198,7 @@ const MusicUpload: React.FC = () => {
         <div className="flex items-center space-x-4 mb-6">
           <input
             type="file"
-            accept="audio/mp3"
+            accept="audio/*"
             onChange={handleFileChange}
             className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
@@ -246,7 +247,7 @@ const MusicUpload: React.FC = () => {
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
                       placeholder="New name"
-                      className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="text-black flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
                       onClick={() => handleRename(track.id!)}
@@ -263,7 +264,7 @@ const MusicUpload: React.FC = () => {
                   </div>
                 ) : (
                   <div className="flex items-center justify-between w-full">
-                    <span className="text-gray-700 font-medium">
+                    <span className="text-gray-700 font-medium truncate max-w-[80%]">
                       {track.fileName}
                     </span>
                     <div className="flex space-x-2">
