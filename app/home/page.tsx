@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <div>
       <span className="text-3xl flex justify-center font-bold ">
-        Upload Your Music
+        Music
       </span>
       <MusicUpload />
       <Goals />

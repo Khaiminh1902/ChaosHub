@@ -6,6 +6,7 @@ import React, { useState, useEffect, ChangeEvent } from "react";
 import { useUser } from "@clerk/clerk-react";
 import axios, { AxiosResponse } from "axios";
 import db from "../../db";
+import ChooseMusic from "./choose";
 
 interface Track {
   id?: number;
@@ -193,8 +194,12 @@ const MusicUpload: React.FC = () => {
 
   return (
     <div className="py-10 px-4 sm:px-6 lg:px-8 ">
+      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6 mb-10">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Choose from Music Library</h2>
+        <ChooseMusic />
+      </div>
       <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Upload Music</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6"> Or Upload Your Own Music</h2>
         <div className="flex items-center space-x-4 mb-6">
           <input
             type="file"
