@@ -1,4 +1,3 @@
-// app/room/[roomid]/page.tsx
 import { notFound } from "next/navigation";
 import Room from "./Room";
 

@@ -20,7 +20,6 @@ const Goals: React.FC = () => {
   const [showInvalidModal, setShowInvalidModal] = useState<boolean>(false);
   const [showCompleteModal, setShowCompleteModal] = useState<Goal | null>(null);
 
-  // Load goals from localStorage
   useEffect(() => {
     try {
       const savedGoals = localStorage.getItem("goals");
@@ -93,7 +92,6 @@ const Goals: React.FC = () => {
     }
   }, []);
 
-  // Save goals to localStorage
   useEffect(() => {
     try {
       localStorage.setItem("goals", JSON.stringify(goals));
@@ -102,7 +100,6 @@ const Goals: React.FC = () => {
     }
   }, [goals]);
 
-  // Clean up on unmount
   useEffect(() => {
     return () => {
       try {

@@ -221,7 +221,7 @@ const MusicUpload: React.FC = () => {
         </div>
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Volume: {(volume * 100).toFixed(0)}%
+            Audio Volume: {(volume * 100).toFixed(0)}%
           </label>
           <input
             type="range"

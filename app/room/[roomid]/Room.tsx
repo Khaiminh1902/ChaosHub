@@ -8,13 +8,13 @@ import useUser from "@/hooks/useUser";
 const Room = ({ roomId }: { roomId: string }) => {
   const { fullName } = useUser();
   const meetingRef = useRef<HTMLDivElement | null>(null);
-  const isJoinedRef = useRef(false); // Flag to prevent multiple joins
+  const isJoinedRef = useRef(false);
 
   useEffect(() => {
-    let zp: any = null; // Store ZegoUIKitPrebuilt instance
+    let zp: any = null;
 
     const myMeeting = async (element: HTMLDivElement) => {
-      if (isJoinedRef.current) return; // Prevent multiple joins
+      if (isJoinedRef.current) return;
 
       const { ZegoUIKitPrebuilt } = await import(
         "@zegocloud/zego-uikit-prebuilt"
@@ -57,14 +57,12 @@ const Room = ({ roomId }: { roomId: string }) => {
       myMeeting(meetingRef.current);
     }
 
-    // Cleanup function to destroy the Zego instance when unmounting
     return () => {
       if (zp) {
         zp.destroy();
       }
     };
-  }, [roomId, fullName]); // Dependencies
-
+  }, [roomId, fullName]);
   return (
     <div className="overflow-x-hidden flex flex-col items-center justify-center">
       <div

@@ -1,58 +1,38 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-import React, { useState, useEffect } from 'react';
-import { Music } from '../../../types/music';
+import React, { useEffect, useState } from 'react';
 
-const MusicLibrary = ({ userId = 'user1' }: { userId?: string }) => {
-  const [musicList, setMusicList] = useState<Music[]>([]);
+type Track = {
+  title: string;
+  duration: string;
+  url: string;
+};
+
+const Page = () => {
+  const [tracks, setTracks] = useState<Track[]>([]);
 
   useEffect(() => {
-    fetch('/api/music')
-      .then((res) => res.json())
-      .then((data) => setMusicList(data));
+    fetch('/music-data.json')
+      .then(res => res.json())
+      .then(setTracks);
   }, []);
-
-  const selectMusic = async (musicId: string) => {
-    try {
-      const res = await fetch('/api/music/select', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ musicId, userId }),
-      });
-      if (res.ok) {
-        alert('Music selected!');
-        window.location.href = '/';
-      } else {
-        alert('Failed to select music');
-      }
-    } catch (error) {
-      alert('Error selecting music');
-    }
-  };
 
   return (
     <div>
-      <span className="flex text-center justify-center mt-10 text-3xl font-bold">Music Library</span>
-      <div>
-        List of music:
-        <ul className="mt-4">
-          {musicList.map((music) => (
-            <li key={music.id} className="flex items-center gap-4 p-2 border-b">
-              <span>
-                {music.title} by {music.artist} ({music.genre})
-              </span>
-              <button
-                onClick={() => selectMusic(music.id)}
-                className="p-1 bg-green-600 text-white rounded-md hover:bg-green-700"
-              >
-                Select
-              </button>
-            </li>
-          ))}
-        </ul>
+      <span className='flex justify-center mt-10 text-4xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent'>Music Library</span>
+      <div className='mt-10 pl-4 flex flex-col gap-10'>
+        {tracks.map((track, index) => (
+          <div key={index} className='flex flex-col'>
+            <span className='text-lg font-bold'>{index + 1}. {track.title}</span>
+            <span className='text-sm'>Duration: {track.duration}</span>
+            <audio controls className='mt-2'>
+              <source src={track.url} type='audio/mpeg' />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default MusicLibrary;
+export default Page;

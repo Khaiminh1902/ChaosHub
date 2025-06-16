@@ -6,8 +6,6 @@ import React from 'react';
 
 const NavBar = () => {
   const pathname = usePathname();
-
-  // Helper function to check if a link is active (matches path or is a parent route)
   const isActive = (href: string) => {
     return pathname === href || pathname.startsWith(href + '/');
   };
